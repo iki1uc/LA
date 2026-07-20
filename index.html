@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>LA · Lage-Achsen · Erzählt GE</title>
+
+<style>
+body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
+h1 { color:#6cf; }
+h2 { color:#0f0; margin-top:30px; }
+pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
+a { color:#6cf; }
+</style>
+
+<script>
+async function load() {
+    const r = await fetch("LA.json");
+    return r.ok ? await r.json() : null;
+}
+
+function render(d) {
+    document.getElementById("achsen").textContent =
+        d.X + " / " + d.Y + " / " + d.Z + " / " + d.U + " / " + d.V + " / " + d.W;
+
+    document.getElementById("story").textContent =
+        "LA definiert die 6D-Achsen. GE baut darauf die Struktur. " +
+        "Gemeinsam bilden sie die Lage, die später in LAGE stabilisiert wird.";
+}
+
+async function start() {
+    const d = await load();
+    if (d) render(d);
+}
+</script>
+</head>
+
+<body onload="start()">
+
+<h1>LA · Lage-Achsen</h1>
+
+<h2>Achsen (6D)</h2>
+<pre id="achsen">Lade…</pre>
+
+<h2>LA erzählt GE</h2>
+<pre id="story">Lade…</pre>
+
+<h2>Weiter zu GE</h2>
+<a href="../GE/index.html">GE · Geometrie</a>
+
+</body>
+</html>
