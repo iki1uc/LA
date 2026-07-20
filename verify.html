@@ -2,162 +2,55 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>C/X/Z – VERIFY • TIC‑TAC‑TOE‑Matrix</title>
+<title>LA · Verify · 6D-Achsen</title>
 
 <style>
-body { background:#000; color:#eee; font-family:Consolas; padding:20px; }
-h1,h2 { color:#00e0ff; text-shadow:0 0 10px #00e0ff; }
-.block { border:1px solid #00e0ff; padding:15px; margin:20px 0; border-radius:8px; background:#111; }
-pre { background:#222; padding:10px; border-radius:6px; }
-.matrix { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
-.cell { padding:10px; background:#222; border:1px solid #333; text-align:center; border-radius:6px; }
+body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
+h1 { color:#6cf; }
+pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
+.axis { color:#0f0; }
+.status { color:#6cf; }
 </style>
 
 <script>
-// Station automatisch erkennen
-function detectStation() {
-  const p = window.location.pathname.toLowerCase();
-  if (p.includes("/c/")) return "C";
-  if (p.includes("/x/")) return "X";
-  if (p.includes("/z/")) return "Z";
-  return "UNDEFINED";
-}
-const station = detectStation();
-
-// Fähigkeiten der drei Stationen
-const C = [
-  "C.tmp",
-  "NC3×3",
-  "NC6e",
-  "NC9×9",
-  "TMP",
-  "TRANS",
-  "WARB",
-  "X.room.CORE",
-  "X.room.IN",
-  "X.room.OUT",
-  "ghost.html",
-  "NC.math",
-  "ROOT.me",
-  "SOURCE.me",
-  "SYSTEM.me"
-];
-
-const X = [
-  "X.tmp",
-  "NC3×3",
-  "NC6e",
-  "NC9×9",
-  "TMP",
-  "TRANS",
-  "WARB",
-  "X.room.CORE",
-  "X.room.IN",
-  "X.room.OUT",
-  "ghost.html",
-  "NC.math",
-  "ROOT.me",
-  "SOURCE.me",
-  "SYSTEM.me"
-];
-
-const Z = [
-  "Z.tmp",
-  "NC3×3",
-  "NC6e",
-  "NC9×9",
-  "TMP",
-  "TRANS",
-  "WARB",
-  "X.room.CORE",
-  "X.room.IN",
-  "X.room.OUT",
-  "ghost.html",
-  "NC.math",
-  "ROOT.me",
-  "SOURCE.me",
-  "SYSTEM.me"
-];
-
-// Vergleichsfunktion
-function compare(base, target) {
-  let have = [];
-  let need = [];
-  for (const item of base) {
-    if (target.includes(item)) have.push(item);
-    else need.push(item);
-  }
-  return { have, need };
+async function load() {
+    const r = await fetch("LA.json");
+    return r.ok ? await r.json() : null;
 }
 
-function runVerify() {
-  const CtoX = compare(C, X);
-  const CtoZ = compare(C, Z);
+function render(data) {
+    if (!data) {
+        document.getElementById("status").textContent = "FEHLT";
+        return;
+    }
 
-  const XtoC = compare(X, C);
-  const XtoZ = compare(X, Z);
+    document.getElementById("achsen").textContent =
+        data.X + " / " +
+        data.Y + " / " +
+        data.Z + " / " +
+        data.U + " / " +
+        data.V + " / " +
+        data.W;
 
-  const ZtoC = compare(Z, C);
-  const ZtoX = compare(Z, X);
+    document.getElementById("status").textContent = "OK · 6D geladen";
+}
 
-  document.getElementById("output").textContent =
-    "Station: " + station + "\n\n" +
-
-    "TIC‑TAC‑TOE – Kreuz‑Vergleich\n" +
-    "=============================\n\n" +
-
-    "C ↔ X\n" +
-    "C hat: " + CtoX.have.join(", ") + "\n" +
-    "C braucht: " + CtoX.need.join(", ") + "\n\n" +
-
-    "X hat: " + XtoC.have.join(", ") + "\n" +
-    "X braucht: " + XtoC.need.join(", ") + "\n\n" +
-
-    "C ↔ Z\n" +
-    "C hat: " + CtoZ.have.join(", ") + "\n" +
-    "C braucht: " + CtoZ.need.join(", ") + "\n\n" +
-
-    "Z hat: " + ZtoC.have.join(", ") + "\n" +
-    "Z braucht: " + ZtoC.need.join(", ") + "\n\n" +
-
-    "X ↔ Z\n" +
-    "X hat: " + XtoZ.have.join(", ") + "\n" +
-    "X braucht: " + XtoZ.need.join(", ") + "\n\n" +
-
-    "Z hat: " + ZtoX.have.join(", ") + "\n" +
-    "Z braucht: " + ZtoX.need.join(", ") + "\n\n" +
-
-    "PORT‑RESPO‑Export\n" +
-    "=================\n" +
-    "C‑Vector: " + C.join(", ") + "\n" +
-    "X‑Vector: " + X.join(", ") + "\n" +
-    "Z‑Vector: " + Z.join(", ") + "\n\n" +
-
-    "Empfehlung:\n" +
-    "- C/X/Z sind vollständig kompatibel.\n" +
-    "- PORT kann alle drei als 3‑Eck‑Matrix laden.\n" +
-    "- TIC‑TAC‑TOE‑Matrix ist stabil.\n";
+async function start() {
+    const data = await load();
+    render(data);
 }
 </script>
 </head>
 
-<body onload="runVerify()">
+<body onload="start()">
 
-<h1>C/X/Z – VERIFY • TIC‑TAC‑TOE‑Matrix</h1>
+<h1>LA · Verify</h1>
 
-<div class="block">
-  <h2>Matrix</h2>
-  <div class="matrix">
-    <div class="cell">C</div>
-    <div class="cell">X</div>
-    <div class="cell">Z</div>
-  </div>
-</div>
+<h2>6D-Achsen</h2>
+<pre id="achsen" class="axis">Lade…</pre>
 
-<div class="block">
-  <h2>Analyse‑Output</h2>
-  <pre id="output"></pre>
-</div>
+<h2>Status</h2>
+<pre id="status" class="status">Lade…</pre>
 
 </body>
 </html>
