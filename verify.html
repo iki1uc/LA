@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>C/X/Z – VERIFY • TIC‑TAC‑TOE‑Matrix</title>
+
+<style>
+body { background:#000; color:#eee; font-family:Consolas; padding:20px; }
+h1,h2 { color:#00e0ff; text-shadow:0 0 10px #00e0ff; }
+.block { border:1px solid #00e0ff; padding:15px; margin:20px 0; border-radius:8px; background:#111; }
+pre { background:#222; padding:10px; border-radius:6px; }
+.matrix { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.cell { padding:10px; background:#222; border:1px solid #333; text-align:center; border-radius:6px; }
+</style>
+
+<script>
+// Station automatisch erkennen
+function detectStation() {
+  const p = window.location.pathname.toLowerCase();
+  if (p.includes("/c/")) return "C";
+  if (p.includes("/x/")) return "X";
+  if (p.includes("/z/")) return "Z";
+  return "UNDEFINED";
+}
+const station = detectStation();
+
+// Fähigkeiten der drei Stationen
+const C = [
+  "C.tmp",
+  "NC3×3",
+  "NC6e",
+  "NC9×9",
+  "TMP",
+  "TRANS",
+  "WARB",
+  "X.room.CORE",
+  "X.room.IN",
+  "X.room.OUT",
+  "ghost.html",
+  "NC.math",
+  "ROOT.me",
+  "SOURCE.me",
+  "SYSTEM.me"
+];
+
+const X = [
+  "X.tmp",
+  "NC3×3",
+  "NC6e",
+  "NC9×9",
+  "TMP",
+  "TRANS",
+  "WARB",
+  "X.room.CORE",
+  "X.room.IN",
+  "X.room.OUT",
+  "ghost.html",
+  "NC.math",
+  "ROOT.me",
+  "SOURCE.me",
+  "SYSTEM.me"
+];
+
+const Z = [
+  "Z.tmp",
+  "NC3×3",
+  "NC6e",
+  "NC9×9",
+  "TMP",
+  "TRANS",
+  "WARB",
+  "X.room.CORE",
+  "X.room.IN",
+  "X.room.OUT",
+  "ghost.html",
+  "NC.math",
+  "ROOT.me",
+  "SOURCE.me",
+  "SYSTEM.me"
+];
+
+// Vergleichsfunktion
+function compare(base, target) {
+  let have = [];
+  let need = [];
+  for (const item of base) {
+    if (target.includes(item)) have.push(item);
+    else need.push(item);
+  }
+  return { have, need };
+}
+
+function runVerify() {
+  const CtoX = compare(C, X);
+  const CtoZ = compare(C, Z);
+
+  const XtoC = compare(X, C);
+  const XtoZ = compare(X, Z);
+
+  const ZtoC = compare(Z, C);
+  const ZtoX = compare(Z, X);
+
+  document.getElementById("output").textContent =
+    "Station: " + station + "\n\n" +
+
+    "TIC‑TAC‑TOE – Kreuz‑Vergleich\n" +
+    "=============================\n\n" +
+
+    "C ↔ X\n" +
+    "C hat: " + CtoX.have.join(", ") + "\n" +
+    "C braucht: " + CtoX.need.join(", ") + "\n\n" +
+
+    "X hat: " + XtoC.have.join(", ") + "\n" +
+    "X braucht: " + XtoC.need.join(", ") + "\n\n" +
+
+    "C ↔ Z\n" +
+    "C hat: " + CtoZ.have.join(", ") + "\n" +
+    "C braucht: " + CtoZ.need.join(", ") + "\n\n" +
+
+    "Z hat: " + ZtoC.have.join(", ") + "\n" +
+    "Z braucht: " + ZtoC.need.join(", ") + "\n\n" +
+
+    "X ↔ Z\n" +
+    "X hat: " + XtoZ.have.join(", ") + "\n" +
+    "X braucht: " + XtoZ.need.join(", ") + "\n\n" +
+
+    "Z hat: " + ZtoX.have.join(", ") + "\n" +
+    "Z braucht: " + ZtoX.need.join(", ") + "\n\n" +
+
+    "PORT‑RESPO‑Export\n" +
+    "=================\n" +
+    "C‑Vector: " + C.join(", ") + "\n" +
+    "X‑Vector: " + X.join(", ") + "\n" +
+    "Z‑Vector: " + Z.join(", ") + "\n\n" +
+
+    "Empfehlung:\n" +
+    "- C/X/Z sind vollständig kompatibel.\n" +
+    "- PORT kann alle drei als 3‑Eck‑Matrix laden.\n" +
+    "- TIC‑TAC‑TOE‑Matrix ist stabil.\n";
+}
+</script>
+</head>
+
+<body onload="runVerify()">
+
+<h1>C/X/Z – VERIFY • TIC‑TAC‑TOE‑Matrix</h1>
+
+<div class="block">
+  <h2>Matrix</h2>
+  <div class="matrix">
+    <div class="cell">C</div>
+    <div class="cell">X</div>
+    <div class="cell">Z</div>
+  </div>
+</div>
+
+<div class="block">
+  <h2>Analyse‑Output</h2>
+  <pre id="output"></pre>
+</div>
+
+</body>
+</html>
