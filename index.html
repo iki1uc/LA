@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>LA · Lage-Achsen · Erzählt GE</title>
+<title>LA · 6D Lage-Achsen · Intelligent</title>
 
 <style>
 body { background:#000; color:#0ff; font-family:Consolas; padding:20px; }
@@ -10,39 +10,107 @@ h1 { color:#6cf; }
 h2 { color:#0f0; margin-top:30px; }
 pre { background:#111; padding:12px; border:1px solid #333; border-radius:6px; }
 a { color:#6cf; }
+
+/* Orbit-Sphere */
+.orbitSphere {
+    width:200px; height:200px; margin:auto;
+    border-radius:50%;
+    background: radial-gradient(circle, #000 0%, #001 40%, #003 70%, #000 100%);
+    box-shadow: 0 0 40px #0af, inset 0 0 60px #000;
+    display:flex; align-items:center; justify-content:center;
+    animation:spinSphere 8s linear infinite;
+    transform-style:preserve-3d;
+    position:relative;
+}
+.blackHole {
+    width:60px; height:60px; border-radius:50%;
+    background: radial-gradient(circle, #000 0%, #050505 40%, #000 100%);
+    box-shadow: inset 0 0 30px #000, 0 0 20px #0ff;
+    position:absolute; animation:holePulse 3s ease-in-out infinite;
+}
+.orbitSymbol {
+    font-size:60px; color:#6cf; text-shadow:0 0 15px #0ff;
+}
+
+/* Animations */
+@keyframes holePulse {
+    0% { transform:scale(1); }
+    50% { transform:scale(1.2); }
+    100% { transform:scale(1); }
+}
+@keyframes spinSphere {
+    from { transform:rotateY(0deg) rotateX(0deg); }
+    to { transform:rotateY(360deg) rotateX(360deg); }
+}
+
+/* NC intelligent attachments */
+.ncBox {
+    margin-top:20px; padding:10px; background:#111;
+    border:1px solid #333; border-radius:6px;
+}
+.ncItem {
+    padding:4px; margin:3px; display:inline-block;
+    background:#222; border-radius:4px; cursor:pointer;
+}
+.ncItem:hover { background:#333; }
 </style>
 
-<script>
-async function load() {
-    const r = await fetch("LA.json");
-    return r.ok ? await r.json() : null;
-}
-
-function render(d) {
-    document.getElementById("achsen").textContent =
-        d.X + " / " + d.Y + " / " + d.Z + " / " + d.U + " / " + d.V + " / " + d.W;
-
-    document.getElementById("story").textContent =
-        "LA definiert die 6D-Achsen. GE baut darauf die Struktur. " +
-        "Gemeinsam bilden sie die Lage, die später in LAGE stabilisiert wird.";
-}
+<script type="module">
+import { MASTER } from "./3.js";
 
 async function start() {
-    const d = await load();
-    if (d) render(d);
+    const result = await MASTER.run();
+
+    // Orbit-Symbol dynamisch
+    document.getElementById("orbitSymbol").textContent = "⊙";
+
+    // Pool anzeigen
+    document.getElementById("pool").textContent =
+        JSON.stringify(result.pool, null, 2);
+
+    // Quadrat anzeigen
+    document.getElementById("quadrat").textContent =
+        JSON.stringify(result.quadrat, null, 2);
+
+    // VEC anzeigen
+    document.getElementById("vec").textContent =
+        JSON.stringify(result.vec, null, 2);
+
+    // NC intelligent attachments
+    const nc = ["NC²","NC²□","NC²octa","NC²dual","NC²align"];
+    const box = document.getElementById("ncBox");
+    nc.forEach(n => {
+        const el = document.createElement("div");
+        el.className = "ncItem";
+        el.textContent = n;
+        el.onclick = () => alert("Attachment geladen: " + n);
+        box.appendChild(el);
+    });
 }
 </script>
 </head>
 
 <body onload="start()">
 
-<h1>LA · Lage-Achsen</h1>
+<h1>LA · Lage-Achsen · 6D</h1>
 
-<h2>Achsen (6D)</h2>
-<pre id="achsen">Lade…</pre>
+<!-- Orbit-Sphere -->
+<div class="orbitSphere">
+    <div class="blackHole"></div>
+    <div id="orbitSymbol" class="orbitSymbol"></div>
+</div>
 
-<h2>LA erzählt GE</h2>
-<pre id="story">Lade…</pre>
+<h2>LA-Datenpool</h2>
+<pre id="pool">Lade…</pre>
+
+<h2>LA-GE-Quadrat (360°)</h2>
+<pre id="quadrat">Lade…</pre>
+
+<h2>VECtor (Orbit)</h2>
+<pre id="vec">Lade…</pre>
+
+<h2>NC · Intelligente Attachments</h2>
+<div id="ncBox" class="ncBox"></div>
 
 <h2>Weiter zu GE</h2>
 <a href="../GE/index.html">GE · Geometrie</a>
